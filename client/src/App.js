@@ -335,10 +335,7 @@ function App() {
     }
   };
 
-  const stopSpeaking = () => {
-    speechSynthesis.cancel();
-    setIsSpeaking(false);
-  };
+
 
   // Keyboard shortcuts
   useEffect(() => {
