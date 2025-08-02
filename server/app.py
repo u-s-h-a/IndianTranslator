@@ -4,6 +4,7 @@ import requests
 import json
 import urllib.parse
 import re
+import os
 
 app = Flask(__name__)
 CORS(app)  # To allow requests from React frontend
@@ -32,7 +33,7 @@ def translate_text(text, source_lang, target_lang):
         print(f"Error translating text '{text}': {e}")
         return None
 
-@app.route('/translate', methods=['POST'])
+@app.route('/api/translate', methods=['POST'])
 def translate():
     try:
         data = request.get_json()
@@ -83,5 +84,14 @@ def translate():
         print(error_msg)
         return jsonify({"error": error_msg}), 500
 
+# Health check endpoint
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy", "message": "Translation API is running"})
+
 if __name__ == '__main__':
+    # For local development
     app.run(debug=True)
+else:
+    # For Vercel deployment
+    app.debug = False

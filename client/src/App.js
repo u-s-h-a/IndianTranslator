@@ -2,9 +2,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./App.css";
 
-// API URL configuration
+// API URL configuration - automatically detects current domain
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-app-name.vercel.app/api' 
+  ? `${window.location.origin}/api` 
   : 'http://localhost:5000';
 
 function App() {
