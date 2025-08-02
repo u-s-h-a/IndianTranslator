@@ -152,12 +152,12 @@ function App() {
       } else {
         // Standard translation for non-regional languages
         const res = await axios.post(`${API_BASE_URL}/translate`, {
-          text: text,
+        text: text,
           source: sourceLang,
           target: targetLang
-        });
+      });
         
-        setTranslation(res.data.translatedText);
+      setTranslation(res.data.translatedText);
       }
       
       // Add to history
@@ -289,6 +289,14 @@ function App() {
       // You could add a toast notification here
     }
   }, [translation]);
+
+  const shareToWhatsApp = useCallback(() => {
+    if (translation) {
+      const message = `Original: ${text}\nTranslation: ${translation}`;
+      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  }, [text, translation]);
 
   const handleSwapLanguages = useCallback(() => {
     setSourceLanguage(targetLanguage);
@@ -470,8 +478,8 @@ function App() {
               </div>
             </div>
             <div className="textarea-container">
-              <textarea
-                value={text}
+      <textarea
+        value={text}
                 onChange={handleTextChange}
                 placeholder={`Enter your ${languages[sourceLanguage]} text here...`}
                 className="text-input"
@@ -529,13 +537,20 @@ function App() {
                       📋 Copy
                     </button>
                     <button 
+                      onClick={shareToWhatsApp}
+                      className="whatsapp-btn"
+                      title="Share to WhatsApp"
+                    >
+                      💬 WhatsApp
+                    </button>
+                    <button 
                       onClick={() => speakText(translation, targetLanguage)}
                       className="speak-btn"
                       disabled={isSpeaking}
                       title="Speak translation"
                     >
                       {isSpeaking ? "🔇" : "🔊"}
-                    </button>
+      </button>
                   </>
                 )}
               </div>
@@ -548,7 +563,7 @@ function App() {
                 </div>
               ) : translation ? (
                 <div className="translated-text">
-                  {translation}
+        {translation}
                 </div>
               ) : (
                 <div className="placeholder">
