@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "./App.css";
 
@@ -87,7 +87,7 @@ function App() {
     }
   };
 
-  const handleTranslate = async () => {
+  const handleTranslate = useCallback(async () => {
     if (!text.trim()) {
       setError("Please enter some text to translate");
       setTranslation("");
@@ -174,7 +174,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [text, sourceLanguage, targetLanguage, translation]);
 
   // Regional language modification functions
   const applyMarwadiModifications = (hindiText) => {
@@ -283,19 +283,19 @@ function App() {
     setWordCount(0);
   };
 
-  const handleCopyTranslation = () => {
+  const handleCopyTranslation = useCallback(() => {
     if (translation) {
       navigator.clipboard.writeText(translation);
       // You could add a toast notification here
     }
-  };
+  }, [translation]);
 
-  const handleSwapLanguages = () => {
+  const handleSwapLanguages = useCallback(() => {
     setSourceLanguage(targetLanguage);
     setTargetLanguage(sourceLanguage);
     setText(translation);
     setTranslation("");
-  };
+  }, [targetLanguage, sourceLanguage, translation]);
 
   const speakText = (text, language) => {
     if ('speechSynthesis' in window) {
@@ -363,13 +363,15 @@ function App() {
             e.preventDefault();
             setShowHistory(!showHistory);
             break;
+          default:
+            break;
         }
       }
     };
 
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
-  }, [translation, showHistory]);
+  }, [translation, showHistory, handleTranslate, handleCopyTranslation, handleSwapLanguages]);
 
   return (
     <div className="app">
